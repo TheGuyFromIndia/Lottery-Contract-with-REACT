@@ -24,17 +24,31 @@ class App extends React.Component {
     this.setState({message : 'Waiting on trasaction'});
     const accounts = await web3.eth.getAccounts();
     try{
-    await lottery.methods.enter().send({
-      from: accounts[0],
-      value: web3.utils.toWei(this.state.value,'ether')
-    });
-    this.setState({message : 'Trasaction sucess'});
+      await lottery.methods.enter().send({
+        from: accounts[0],
+        value: web3.utils.toWei(this.state.value,'ether')
+      });
+      this.setState({message : 'Trasaction sucess'});
+    }
+    catch(err){
+      this.setState({message : 'Trasaction Failed'});
+    }
+  };
+
+  onClick = async()=>{
+    const accounts = await web3.eth.getAccounts();
+    this.setState({message : 'Waiting on trasaction'});
+    try{
+      await lottery.methods.pickWinner().send({
+        from:accounts[0]
+      });
+      this.setState({message : "Trasaction sucess check you Balance to see if it's you !!!!!!"});
     }
     catch(err){
       this.setState({message : 'Trasaction Failed'});
     }
 
-  };
+  }
 
   render() {
     console.log(web3.version);
@@ -60,6 +74,10 @@ class App extends React.Component {
         </form>
         <hr/>
         <h1>{this.state.message}</h1>
+        <hr/>
+        <h4>Ready to pick a winner?</h4>
+        <button onClick={this.onClick}>Pick winner</button>
+        <hr/>
       </div>
     );
   }
